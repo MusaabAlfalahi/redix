@@ -70,8 +70,8 @@ func (r *Resp) Read() (Value, error) {
 	case BULK:
 		return r.readBulk()
 	default:
-		fmt.Printf("unknown type: %v\n", string(_type))
-		return Value{}, err
+		fmt.Printf("Unknown type: %v", string(_type))
+		return Value{}, nil
 	}
 }
 
@@ -84,7 +84,7 @@ func (r *Resp) readArray() (Value, error) {
 		return v, err
 	}
 
-	v.array = make([]Value, len)
+	v.array = make([]Value, 0)
 	for i := 0; i < len; i++ {
 		val, err := r.Read()
 		if err != nil {
@@ -188,7 +188,7 @@ func NewWriter(w io.Writer) *Writer {
 }
 
 func (w *Writer) Write(v Value) error {
-	bytes := v.Marshal()
+	var bytes = v.Marshal()
 
 	_, err := w.writer.Write(bytes)
 	if err != nil {
